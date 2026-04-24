@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pratinjau Seluler | 123TOOL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-page: #f9f5e7;
+            --card-bg: #ffffff;
+            --editor-bg: #1e1e1e;
+            --primary: #007bff;
+            --danger: #dc3545;
+            --dark-grey: #333333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: var(--bg-page);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 25px;
+            color: #1a1a1a;
+        }
+
+        /* Instruksi Card */
+        .instruction-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid var(--primary);
+            margin-bottom: 30px;
+        }
+
+        .instruction-card h2 {
+            font-size: 14px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .instruction-card ol {
+            padding-left: 18px;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        /* Container HP Emulator */
+        .phone-mockup {
+            width: 100%;
+            max-width: 360px;
+            height: 650px;
+            background: #222;
+            border: 12px solid #333;
+            border-radius: 40px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Editor Header */
+        .header-ui {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: transparent;
+            z-index: 10;
+        }
+
+        .header-ui span {
+            color: #fff;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        button {
+            border: none;
+            padding: 6px 15px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-clear { background: #8e2a2a; color: white; }
+        .btn-toggle { background: #444; color: white; }
+
+        /* Area Kerja */
+        #editor-container, #preview-container {
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            background: #000;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            color: #00ff00;
+            border: none;
+            padding: 15px;
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            outline: none;
+            resize: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border: none;
+        }
+
+        /* View Mode Toggle */
+        .hidden { display: none !important; }
+
+    </style>
+</head>
+<body>
+
+    <h1>Pratinjau Seluler</h1>
+
+    <div class="instruction-card">
+        <h2>Cara penggunaan:</h2>
+        <ol>
+            <li>Klik tombol <b>Editor</b> untuk menulis kode HTML/CSS/JS Anda.</li>
+            <li>Kode akan diperbarui secara instan saat Anda berpindah ke mode <b>Preview</b>.</li>
+            <li>Gunakan <b>Hapus</b> untuk membersihkan area kerja.</li>
+        </ol>
+    </div>
+
+    <div class="phone-mockup">
+        
+        <div class="header-ui">
+            <span id="view-title">Editor 1</span>
+            <div class="btn-group">
+                <button class="btn-clear" onclick="clearCode()">Hapus</button>
+                <button class="btn-toggle" id="mode-btn" onclick="toggleMode()">Preview</button>
+            </div>
+        </div>
+
+        <div id="editor-container">
+            <textarea id="code-input" placeholder="Tulis HTML di sini..." spellcheck="false">
+<style>
+  body { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+    font-family: sans-serif;
+  }
+  h1 { color: #007bff; }
+</style>
+
+<h1>Preview 1</h1></textarea>
+        </div>
+
+        <div id="preview-container" class="hidden">
+            <iframe id="live-preview"></iframe>
+        </div>
+
+    </div>
+
+    <script>
+        const editorCont = document.getElementById('editor-container');
+        const previewCont = document.getElementById('preview-container');
+        const codeInput = document.getElementById('code-input');
+        const livePreview = document.getElementById('live-preview');
+        const modeBtn = document.getElementById('mode-btn');
+        const viewTitle = document.getElementById('view-title');
+
+        let isEditor = true;
+
+        function updatePreview() {
+            const code = codeInput.value;
+            const iframeDoc = livePreview.contentDocument || livePreview.contentWindow.document;
+            iframeDoc.open();
+            iframeDoc.write(code);
+            iframeDoc.close();
+        }
+
+        function toggleMode() {
+            if (isEditor) {
+                // Pindah ke Preview
+                updatePreview();
+                editorCont.classList.add('hidden');
+                previewCont.classList.remove('hidden');
+                modeBtn.innerText = "Editor";
+                viewTitle.innerText = "Preview 1";
+                viewTitle.style.color = "#007bff";
+            } else {
+                // Pindah ke Editor
+                editorCont.classList.remove('hidden');
+                previewCont.classList.add('hidden');
+                modeBtn.innerText = "Preview";
+                viewTitle.innerText = "Editor 1";
+                viewTitle.style.color = "#fff";
+            }
+            isEditor = !isEditor;
+        }
+
+        function clearCode() {
+            if(confirm("Hapus semua kode?")) {
+                codeInput.value = "";
+                updatePreview();
+            }
+        }
+
+        // Jalankan pratinjau pertama kali
+        updatePreview();
+    </script>
+</body>
+</html>
