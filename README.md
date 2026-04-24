@@ -3,7 +3,8 @@
 Editor kode HTML/CSS/JS sederhana yang dirancang khusus untuk perangkat seluler. Dibuat untuk memudahkan developer melakukan *live testing* kode langsung dari genggaman.
 
 ## 🚀 Live Demo
-Lihat hasilnya di sini: `https://123tool.github.io/Web-IDE-Mobile/`
+Akses aplikasi melalui link di bawah ini:  
+👉 **[KLIK UNTUK JALANKAN CODEDEV](https://123tool.github.io/Web-IDE-Mobile/)**
 
 ## ✨ Fitur Utama
 - **Dual Mode:** Beralih antara Editor dan Pratinjau dengan satu ketukan.
